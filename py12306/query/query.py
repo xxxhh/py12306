@@ -16,7 +16,7 @@ class Query:
     """
     jobs = []
     query_jobs = []
-    session = {}
+    # session = {}
 
     # 查询间隔
     interval = {}

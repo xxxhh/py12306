@@ -63,10 +63,14 @@ class Order:
             return self.order_did_success()
         elif not order_request_res:
             return
-        if not self.user_ins.request_init_dc_page(): return
-        if not self.check_order_info(): return
-        if not self.get_queue_count(): return
-        if not self.confirm_single_for_queue(): return
+        if not self.user_ins.request_init_dc_page():
+            return
+        if not self.check_order_info():
+            return
+        if not self.get_queue_count():
+            return
+        if not self.confirm_single_for_queue():
+            return
         order_id = self.query_order_wait_time()
         if order_id:  # 发送通知
             self.order_id = order_id
