@@ -41,6 +41,8 @@ API_CONFIRM_SINGLE_FOR_QUEUE = BASE_URL_OF_12306 + '/otn/confirmPassenger/confir
 API_QUERY_ORDER_WAIT_TIME = BASE_URL_OF_12306 + '/otn/confirmPassenger/queryOrderWaitTime?{}'  # 排队查询
 API_QUERY_INIT_PAGE = BASE_URL_OF_12306 + '/otn/leftTicket/init'
 API_GET_BROWSER_DEVICE_ID = BASE_URL_OF_12306 + '/otn/HttpZF/logdevice'
+API_GET_BROWSER_DEVICE_ID_ONLINE = 'https://12306-rail-id.pjialin.com/'  # 线上获取
+API_FREE_CODE_QCR_API = 'https://12306-ocr.pjialin.com/check/'  # 线上打码
 
 
 API_NOTIFICATION_BY_VOICE_CODE = 'http://ali-voice.showapi.com/sendVoice?'

@@ -178,22 +178,36 @@ class UserJob:
 
     def request_device_id(self):
         """
-        获取加密后的浏览器特征 ID
+        获取加密后的浏览器特征 ID，RAIL_DEVICEID值需要去浏览器拿，然后写死，要么就使用selenium模拟浏览器拿，这里没有写这部分代码
         :return:
         """
-        params = {"algID": self.request_alg_id(), "timestamp": int(time.time() * 1000)}
-        params = dict(params, **self._get_hash_code_params())
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"}
-        self.session.headers.update(headers)
-        response = self.session.get(API_GET_BROWSER_DEVICE_ID, params=params)
-        if response.text.find('callbackFunction') >= 0:
-            result = response.text[18:-2]
+        # params = {"algID": self.request_alg_id(), "timestamp": int(time.time() * 1000)}
+        # params = dict(params, **self._get_hash_code_params())
+        # headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"}
+        # self.session.headers.update(headers)
+        # response = self.session.get(API_GET_BROWSER_DEVICE_ID, params=params)
+        # if response.text.find('callbackFunction') >= 0:
+        #     result = response.text[18:-2]
+        #     try:
+        #         result = json.loads(result)
+        #         self.session.cookies.update({
+        #             'RAIL_EXPIRATION': result.get('exp'),
+        #             'RAIL_DEVICEID': result.get('dfp'),
+        #         })
+        #     except:
+        #         return False
+        """
+        通过线上接口获取加密后的浏览器特征 ID，可靠性未知
+        """
+        response = self.session.get(API_GET_BROWSER_DEVICE_ID_ONLINE)
+        if response.status_code == 200:
             try:
-                result = json.loads(result)
-                self.session.cookies.update({
-                    'RAIL_EXPIRATION': result.get('exp'),
-                    'RAIL_DEVICEID': result.get('dfp'),
-                })
+                result = json.loads(response.text)
+                self.session.cookies.update(result)
+                # self.session.cookies.update({
+                #     'RAIL_EXPIRATION': '',
+                #     'RAIL_DEVICEID': '',
+                # })
             except:
                 return False
 
@@ -471,7 +485,8 @@ class UserJob:
             name: '项羽',
             type: 1,
             id_card: 0000000000000000000,
-            type_text: '成人'
+            type_text: '成人',
+            enc_str: 'aaaaaa'
         }]
         """
         self.get_user_passengers()
@@ -486,7 +501,7 @@ class UserJob:
                 new_member['type_text'] = dict_find_key_by_value(UserType.dicts, int(new_member['type']))
             else:
                 if is_member_code:
-                    passenger = array_dict_find_by_key_value(self.passengers, 'code', member)
+                    passenger = array_dict_find_by_key_value(self.passengers, 'index_id', member)
                 else:
                     passenger = array_dict_find_by_key_value(self.passengers, 'passenger_name', member)
                 if not passenger:
@@ -499,7 +514,8 @@ class UserJob:
                     'id_card_type': passenger.get('passenger_id_type_code'),
                     'mobile': passenger.get('mobile_no'),
                     'type': passenger.get('passenger_type'),
-                    'type_text': dict_find_key_by_value(UserType.dicts, int(passenger.get('passenger_type')))
+                    'type_text': dict_find_key_by_value(UserType.dicts, int(passenger.get('passenger_type'))),
+                    'enc_str': passenger.get('allEncStr')
                 }
             results.append(new_member)
 
@@ -525,6 +541,6 @@ class UserJob:
             self.ticket_info_for_passenger_form = json.loads(form.groups()[0].replace("'", '"'))
             self.order_request_dto = json.loads(order.groups()[0].replace("'", '"'))
         except:
-            pass  # TODO Error
+            return False # TODO Error
 
         return True
