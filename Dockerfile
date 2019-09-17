@@ -1,6 +1,5 @@
-FROM python:3.6.6-slim
+FROM python:3.7.4-slim
 
-MAINTAINER <pjialin admin@pjialin.com>
 ENV TZ Asia/Shanghai
 
 WORKDIR /code
@@ -8,12 +7,7 @@ WORKDIR /code
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-
-RUN mkdir -p /data/query /data/user
-VOLUME /data
-
 COPY . .
 
-COPY env.docker.py.example /config/env.py
+COPY ./env.py /config/env.py
 
-CMD [ "python", "main.py" , "-c", "/config/env.py"]
