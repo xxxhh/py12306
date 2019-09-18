@@ -11,6 +11,9 @@ from py12306.helpers.func import *
 class Config:
     IS_DEBUG = False
 
+    #DEVICEID
+    DEVICEID = ''
+
     USER_ACCOUNTS = []
     # 查询任务
     QUERY_JOBS = []

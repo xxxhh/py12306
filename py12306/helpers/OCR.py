@@ -88,9 +88,8 @@ class OCR:
             result = self.get_image_position_by_offset(result)
             # CommonLog.print_auth_code_info("验证码识别的结果为：" + result)
 
+        if result:
             return result
-
-        CommonLog.print_auto_code_fail(CommonLog.MESSAGE_GET_RESPONSE_FROM_FREE_AUTO_CODE)
 
         return None
 

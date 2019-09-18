@@ -378,10 +378,12 @@ class Order:
                 elif 'waitTime' in result_data:
                     # 计算等待时间
                     wait_time = int(result_data.get('waitTime'))
-                    if wait_time == -1 or wait_time == -100:  # 成功
+                    if wait_time == -1:  # 成功
                         # /otn/confirmPassenger/resultOrderForDcQueue 请求订单状态 目前不需要
                         # 不应该走到这
                         return order_id
+                    elif wait_time == -100:  # 重新获取订单号
+                        pass
                     elif wait_time >= 0:  # 等待
                         OrderLog.add_quick_log(
                             OrderLog.MESSAGE_QUERY_ORDER_WAIT_TIME_WAITING.format(result_data.get('waitCount', 0),
@@ -433,11 +435,12 @@ class Order:
             OrderLog.print_passenger_did_deleted(available_passengers)
 
         for passenger in available_passengers:
-            tmp_str = '{seat_type},0,{passenger_type},{passenger_name},{passenger_id_card_type},{passenger_id_card},{passenger_mobile},N_'.format(
+            tmp_str = '{seat_type},0,{passenger_type},{passenger_name},{passenger_id_card_type},{passenger_id_card},{passenger_mobile},N,{enc_str}_'.format(
                 seat_type=self.query_ins.current_order_seat, passenger_type=passenger['type'],
                 passenger_name=passenger['name'],
                 passenger_id_card_type=passenger['id_card_type'], passenger_id_card=passenger['id_card'],
-                passenger_mobile=passenger['mobile']
+                passenger_mobile=passenger['mobile'],
+                enc_str=passenger['enc_str'],
             )
             passenger_tickets.append(tmp_str)
 

@@ -204,10 +204,10 @@ class UserJob:
             try:
                 result = json.loads(response.text)
                 self.session.cookies.update(result)
-                # self.session.cookies.update({
-                #     'RAIL_EXPIRATION': '',
-                #     'RAIL_DEVICEID': '',
-                # })
+                self.session.cookies.update({
+                    # 'RAIL_EXPIRATION': '',
+                    'RAIL_DEVICEID': Config.DEVICEID,
+                })
             except:
                 return False
 
@@ -485,8 +485,7 @@ class UserJob:
             name: '项羽',
             type: 1,
             id_card: 0000000000000000000,
-            type_text: '成人',
-            enc_str: 'aaaaaa'
+            type_text: '成人'
         }]
         """
         self.get_user_passengers()
@@ -501,7 +500,7 @@ class UserJob:
                 new_member['type_text'] = dict_find_key_by_value(UserType.dicts, int(new_member['type']))
             else:
                 if is_member_code:
-                    passenger = array_dict_find_by_key_value(self.passengers, 'index_id', member)
+                    passenger = array_dict_find_by_key_value(self.passengers, 'code', member)
                 else:
                     passenger = array_dict_find_by_key_value(self.passengers, 'passenger_name', member)
                 if not passenger:
@@ -514,8 +513,7 @@ class UserJob:
                     'id_card_type': passenger.get('passenger_id_type_code'),
                     'mobile': passenger.get('mobile_no'),
                     'type': passenger.get('passenger_type'),
-                    'type_text': dict_find_key_by_value(UserType.dicts, int(passenger.get('passenger_type'))),
-                    'enc_str': passenger.get('allEncStr')
+                    'type_text': dict_find_key_by_value(UserType.dicts, int(passenger.get('passenger_type')))
                 }
             results.append(new_member)
 
@@ -541,6 +539,6 @@ class UserJob:
             self.ticket_info_for_passenger_form = json.loads(form.groups()[0].replace("'", '"'))
             self.order_request_dto = json.loads(order.groups()[0].replace("'", '"'))
         except:
-            return False # TODO Error
+            pass  # TODO Error
 
         return True
